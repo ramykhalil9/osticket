@@ -1166,7 +1166,12 @@ implements RestrictedAccess, Threadable {
     //Status helper.
 
     function setStatus($status, $comments='', &$errors=array(), $set_closing_agent=true) {
+        // error_reporting(E_ALL);
+        // ini_set('display_errors', 1);
+
+        global $cfg;
         global $thisstaff;
+        global $ost;
 
         if ($thisstaff && !($role = $thisstaff->getRole($this->getDeptId())))
             return false;
@@ -1242,6 +1247,28 @@ implements RestrictedAccess, Threadable {
         $this->status = $status;
         if (!$this->save())
             return false;
+
+        if($this->status == 'Closed') {
+            $email = $ost->getConfig()->getDefaultEmail();
+
+            $dept = $this->getDept();
+            $tpl = $dept->getTemplate();
+            $msg = $tpl->getAutoCloseTemplate();
+
+            $userEmail = $this->user->getDefaultEmailAddress();
+            $staffEmail = $this->staff->email;
+
+            $msg = $this->replaceVars(
+                $msg->asArray(),
+                array('message' => $comments,
+                        'recipient' => $this->getOwner(),
+                        'signature' => ($dept && $dept->isPublic())?$dept->getSignature():'',
+                        'poster' => _S("A collaborator")
+                )
+            );
+
+            $email->sendAutoReply($userEmail . "," . $staffEmail, $msg['subj'], $msg['body'], null);
+        }
 
         // Log status change b4 reload — if currently has a status. (On new
         // ticket, the ticket is opened and thereafter the status is set to
@@ -2872,7 +2899,21 @@ implements RestrictedAccess, Threadable {
         }
 
         Signal::send('model.updated', $this);
-        return $this->save();
+        
+        $s = $this->save();
+        
+        try {
+            $vars = self::filterTicketData('staff', $vars,
+                array_merge(array($form), $topic_forms), $user);
+        }
+        catch (RejectedException $ex) {
+            return $reject_ticket(
+                sprintf(_S('Ticket rejected (%s) by filter "%s"'),
+                $ex->vars['email'], $ex->getRejectingFilter()->getName())
+            );
+        }
+        
+        return $s;
     }
 
    /*============== Static functions. Use Ticket::function(params); =============nolint*/
