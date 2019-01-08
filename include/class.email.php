@@ -175,11 +175,25 @@ class Email extends VerySimpleModel {
         if($attachments)
             $mailer->addAttachments($attachments);
 
+        // echo "Email to someone with msg {$message}";
+        // die;
+        // return true;
+
         return $mailer->send($to, $subject, $message, $options);
     }
 
     function sendAutoReply($to, $subject, $message, $attachments=null, $options=array()) {
         $options+= array('autoreply' => true);
+        // echo "to: <br />";
+        // print_r($to);
+
+        // echo "<br /><br /><br />SUBJECT: <br />";
+        // print_r($subject);
+
+        // echo "<br /><br /><br />MESSAGE: <br />";
+        // print_r($message);
+        // die;
+
         return $this->send($to, $subject, $message, $attachments, $options);
     }
 

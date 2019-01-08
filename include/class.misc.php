@@ -144,10 +144,10 @@ class Misc {
     }
 
     //Current page
-    function currentURL() {
+    static function currentURL() {
 
         $str = 'http';
-        if ($_SERVER['HTTPS'] == 'on') {
+        if (isset($_SERVER['https']) && $_SERVER['HTTPS'] == 'on') {
             $str .='s';
         }
         $str .= '://';

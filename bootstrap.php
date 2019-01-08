@@ -32,6 +32,9 @@ class Bootstrap {
         ini_set('display_errors', '0'); // Set by installer
         ini_set('display_startup_errors', '0'); // Set by installer
 
+        // error_reporting(E_ALL);
+        // ini_set('display_errors', 1);
+
         //Default timezone
         if (!ini_get('date.timezone')) {
             if(function_exists('date_default_timezone_set')) {
@@ -138,7 +141,7 @@ class Bootstrap {
         define('TIMEZONE_TABLE',$prefix.'timezone');
     }
 
-    function loadConfig() {
+    static function loadConfig() {
         #load config info
         $configfile='';
         if(file_exists(INCLUDE_DIR.'ost-config.php')) //NEW config file v 1.6 stable ++
@@ -189,7 +192,7 @@ class Bootstrap {
             self::croak($ferror);
     }
 
-    function loadCode() {
+    static function loadCode() {
         #include required files
         require_once INCLUDE_DIR.'class.util.php';
         require_once INCLUDE_DIR.'class.translation.php';
@@ -209,7 +212,7 @@ class Bootstrap {
         require_once INCLUDE_DIR.'class.search.php';
     }
 
-    function i18n_prep() {
+    static function i18n_prep() {
         ini_set('default_charset', 'utf-8');
         ini_set('output_encoding', 'utf-8');
 
@@ -289,11 +292,11 @@ class Bootstrap {
     }
 
     function croak($message) {
-        $msg = $message."\n\n".THISPAGE;
-        Mailer::sendmail(ADMIN_EMAIL, 'osTicket Fatal Error', $msg,
-            sprintf('"osTicket Alerts"<%s>', ADMIN_EMAIL));
+        // $msg = $message."\n\n".THISPAGE;
+        // Mailer::sendmail(ADMIN_EMAIL, 'osTicket Fatal Error', $msg,
+            // sprintf('"osTicket Alerts"<%s>', ADMIN_EMAIL));
         //Display generic error to the user
-        Http::response(500, "<b>Fatal Error:</b> Contact system administrator.");
+        // Http::response(500, "<b>Fatal Error:</b> Contact system administrator.");
     }
 }
 

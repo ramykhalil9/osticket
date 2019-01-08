@@ -723,7 +723,7 @@ class TicketFilter {
             $this->vars['addressee'] = implode(' ', $this->vars['addressee']);
         }
 
-         //Init filters.
+        //Init filters.
         $this->build();
     }
 
@@ -739,7 +739,6 @@ class TicketFilter {
             while (list($id) = db_fetch_row($res))
                 $this->filters[] = new Filter($id);
         }
-
         return $this->filters;
     }
 
@@ -773,6 +772,9 @@ class TicketFilter {
      * ticket set is returned.
      */
     function apply(&$ticket) {
+        echo "<pre>";
+        print_r($this->getMatchingFilterList());
+        die;
         foreach ($this->getMatchingFilterList() as $filter) {
             $filter->apply($ticket, $this->vars);
             if ($filter->stopOnMatch()) break;

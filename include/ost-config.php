@@ -41,8 +41,8 @@ define('ADMIN_EMAIL','ramy.khalil@bmbgroup.com');
 define('DBTYPE','mysql');
 define('DBHOST','localhost');
 define('DBNAME','osticket');
-define('DBUSER','osticket');
-define('DBPASS','P@ssw0rd');
+define('DBUSER','root');
+define('DBPASS','acidburn1@');
 
 # Table prefix
 define('TABLE_PREFIX','ost_');

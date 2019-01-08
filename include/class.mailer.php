@@ -553,10 +553,10 @@ class Mailer {
             // Force reconnect on next ->send()
             unset($smtp_connections[$key]);
 
-            $alert=_S("Unable to email via SMTP")
-                    .sprintf(":%1\$s:%2\$d [%3\$s]\n\n%4\$s\n",
-                    $smtp['host'], $smtp['port'], $smtp['username'], $result->getMessage());
-            $this->logError($alert);
+            // $alert=_S("Unable to email via SMTP")
+            //         .sprintf(":%1\$s:%2\$d [%3\$s]\n\n%4\$s\n",
+            //         $smtp['host'], $smtp['port'], $smtp['username'], $result->getMessage());
+            // $this->logError($alert);
         }
 
         //No SMTP or it failed....use php's native mail function.
@@ -570,10 +570,10 @@ class Mailer {
         if(!PEAR::isError($result))
             return $messageId;
 
-        $alert=_S("Unable to email via php mail function")
-                .sprintf(":%1\$s\n\n%2\$s\n",
-                $to, $result->getMessage());
-        $this->logError($alert);
+        // $alert=_S("Unable to email via php mail function")
+        //         .sprintf(":%1\$s\n\n%2\$s\n",
+        //         $to, $result->getMessage());
+        // $this->logError($alert);
         return false;
     }
 

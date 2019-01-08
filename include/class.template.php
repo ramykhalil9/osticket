@@ -44,6 +44,14 @@ class EmailTemplateGroup {
                 'ticket', 'signature', 'response', 'recipient',
             ),
         ),
+        'ticket.closed.notice'=>array(
+            'group'=>'a.ticket.user',
+            'name'=>/* @trans */ 'Ticket Closed Response',
+            'desc'=>/* @trans */ 'Canned reply sent to the user and assigned agent upon ticket close.',
+            'context' => array(
+                'ticket', 'signature', 'response', 'recipient', 'staff', 'poster', 'message',
+            ),
+        ),
         'message.autoresp'=>array(
             'group'=>'a.ticket.user',
             'name'=>/* @trans */ 'New Message Auto-response',
@@ -317,6 +325,10 @@ class EmailTemplateGroup {
         return $this->getMsgTemplate('ticket.autoresp');
     }
 
+    function getAutoCloseTemplate() {
+        return $this->getMsgTemplate('ticket.closed.notice');
+    }
+    
     function getAutoReplyMsgTemplate() {
         return $this->getMsgTemplate('ticket.autoreply');
     }

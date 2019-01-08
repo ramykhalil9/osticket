@@ -524,7 +524,6 @@ class Internationalization {
     }
 
     static function bootstrap() {
-
         require_once INCLUDE_DIR . 'class.translation.php';
 
         $domain = 'messages';

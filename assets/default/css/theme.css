@@ -859,7 +859,7 @@ i.refresh {
   -moz-background-clip: padding;
   background-clip: padding-box;
   color: #777 !important;
-  display: none;
+  display: inline-block;
   border: 1px solid #aaa;
   cursor: pointer;
   font-size: 11px;
@@ -879,7 +879,7 @@ i.refresh {
 .action-button span,
 .action-button a {
   color: #777 !important;
-  display: none;
+  display: inline-block;
   float: left;
 }
 .action-button a {
