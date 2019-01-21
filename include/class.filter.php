@@ -772,9 +772,6 @@ class TicketFilter {
      * ticket set is returned.
      */
     function apply(&$ticket) {
-        echo "<pre>";
-        print_r($this->getMatchingFilterList());
-        die;
         foreach ($this->getMatchingFilterList() as $filter) {
             $filter->apply($ticket, $this->vars);
             if ($filter->stopOnMatch()) break;
