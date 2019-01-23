@@ -114,7 +114,7 @@ foreach($openTickets_results as $openTicket) {
             // If no reminder has been sent
             if($openTicket['reminders_sent'] == 0) {
                 // If 72 hours have passed
-                if($differenceInHours >= 1) {
+                if($differenceInHours >= 72) {
                     // Send email reminder to TM
                     incrementReminder($db, 1, $openTicket['ticket_id']);
                     sendMail($openTicket['ticket_id'], $differenceInHours, true);
