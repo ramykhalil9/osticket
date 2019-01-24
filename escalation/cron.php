@@ -10,32 +10,32 @@ use PHPMailer\PHPMailer\Exception;
 // Importing mail class
 require __DIR__ . "/vendor/autoload.php";
 
-// $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
-// try {
-//     //Server settings
-//     $mail->SMTPDebug = 2;                                 // Enable verbose debug output
-//     $mail->isSMTP();                                    // Set mailer to use SMTP
-//     $mail->Host = 'lbfcmail.bmbgroup.com';  // Specify main and backup SMTP servers
-//     $mail->SMTPAuth = true;                               // Enable SMTP authentication
-//     // $mail->Username = 'user@example.com';                 // SMTP username
-//     // $mail->Password = 'secret';                           // SMTP password
-//     // $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-//     $mail->Port = 25;                                    // TCP port to connect to
+$mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+try {
+    //Server settings
+    $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+    $mail->isSMTP();                                    // Set mailer to use SMTP
+    $mail->Host = 'lbfcmail.bmbgroup.com';  // Specify main and backup SMTP servers
+    $mail->SMTPAuth = true;                               // Enable SMTP authentication
+    // $mail->Username = 'user@example.com';                 // SMTP username
+    // $mail->Password = 'secret';                           // SMTP password
+    // $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+    $mail->Port = 25;                                    // TCP port to connect to
 
-//     //Recipients
-//     $mail->setFrom('info@bmbgroup.com');
-//     $mail->addAddress('andy@yllw.com');     // Add a recipient
-//     $mail->isHTML(true);                                  // Set email format to HTML
-//     $mail->Subject = 'Here is the subject';
-//     $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-//     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+    //Recipients
+    $mail->setFrom('tac@bmbgroup.com');
+    $mail->addAddress('andy@yllw.com');     // Add a recipient
+    $mail->isHTML(true);                                  // Set email format to HTML
+    $mail->Subject = 'Here is the subject';
+    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
-//     die($mail->send());
-//     echo 'Message has been sent';
-// } catch (Exception $e) {
-//     echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
-//     die;
-// }
+    die($mail->send());
+    echo 'Message has been sent';
+} catch (Exception $e) {
+    echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+    die;
+}
 
 // Fetching all the tickets that are open
 // Closed means status_id = 3, so checking for anything different than 3
@@ -200,6 +200,9 @@ foreach($openTickets_results as $openTicket) {
         }
 
     }
+
+    echo "<pre>";
+    print_r($openTicket);
 }
 
 function incrementReminder($db, $i, $id) {
@@ -207,28 +210,36 @@ function incrementReminder($db, $i, $id) {
 }
 
 function sendMail($ticketID, $openFor, $tm = false, $sm = false, $om = false, $president = false) {
-    $subject = "Ticket #{$ticketID} is still open.";
-    $content = "Please note ticket #{$ticketID} has been open for {$openFor} hours.";
-    $recipientsArray = array();
+    $email = new \SendGrid\Mail\Mail(); 
+    $email->setFrom("andy@yllw.com");
+    $email->setSubject("Ticket #{$ticketID} is still open.");
 
     if($tm) {
-        $recipientsArray[] = "andy@yllw.com";
+        $email->addTo("andy@yllw.com");
     }
 
     if($sm) {
-        $recipientsArray[] = "andy@yllw.com";
+        $email->addTo("andy.abihaidar@xtnd.io");
     }
 
     if($om) {
-        $recipientsArray[] = "andy@yllw.com";
+        $email->addTo("andy@xtnd.io");
     }
 
     if($president) {
-        $recipientsArray[] = "andy@yllw.com";
+        $email->addTo("andyabihaidar@gmail.com");
     }
 
-    $recipientsArray = implode(",", $recipientsArray);
-
-    mail($recipients, $subject, $content);
-    echo "Reminder sent for ticket #{$ticketID}.";
+    $email->addContent("text/plain", "Please note ticket #{$ticketID} has been open for {$openFor} hours.");
+    $email->addContent(
+        "text/html", "Please note ticket #{$ticketID} has been open for {$openFor} hours."
+    );
+    try {
+        $response = $sendgrid->send($email);
+        print $response->statusCode() . "\n";
+        print_r($response->headers());
+        print $response->body() . "\n";
+    } catch (Exception $e) {
+        echo 'Caught exception: '. $e->getMessage() ."\n";
+    }
 }
