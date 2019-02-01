@@ -200,7 +200,7 @@ foreach($openTickets_results as $openTicket) {
     
     echo "<pre>";
     print_r($openTicket);
-    print_r($_ticketVariables);
+    print_r($_emailVariables);
     echo "</pre>";
 }
 
