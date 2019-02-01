@@ -1248,7 +1248,7 @@ implements RestrictedAccess, Threadable {
         if (!$this->save())
             return false;
 
-        if($this->status == 'Closed') {
+        if($this->status == 'Closed' || $this->status == 'Resolved') {
             $email = $ost->getConfig()->getDefaultEmail();
 
             $dept = $this->getDept();
