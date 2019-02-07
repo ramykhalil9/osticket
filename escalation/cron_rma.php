@@ -14,16 +14,33 @@ require __DIR__ . "/vendor/autoload.php";
 // Closed means status_id = 3, so checking for anything different than 3
 // Also only return if the ticket is RMA required and the email for RMA required is not already sent
 $openTickets_query = $db->dbh->query("
-    SELECT `ost_ticket`.*, `ost_ticket__cdata`.*, `ost_ticket_priority`.`priority_desc`
+    SELECT `ost_ticket`.*, `ost_ticket__cdata`.*, `ost_ticket_priority`.`priority_desc`, `ost_form_entry`.`id` as `form_id`
     FROM `ost_ticket`
     LEFT JOIN `ost_ticket__cdata` ON `ost_ticket__cdata`.`ticket_id` = `ost_ticket`.`ticket_id`
+    LEFT JOIN `ost_form_entry` ON `ost_form_entry`.`object_id` = `ost_ticket`.`ticket_id` AND `ost_form_entry`.`object_type` = 'T'
+    LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id` AND `field_id` = 39
     LEFT JOIN `ost_ticket_priority` ON `ost_ticket__cdata`.`priority` = `ost_ticket_priority`.`priority_id`
-    WHERE `status_id` != 3 AND `status_id` != 2 AND (`RMARequiredEmailSent` != 1 OR `RMARequiredEmailSent` IS NULL) AND (`RMARequired` = 1 OR `RMARequired` IS NULL)");
+    WHERE `status_id` != 3 AND `status_id` != 2  AND (`ost_form_entry_values`.`value` = 1)");
 $openTickets_query->execute();
 $openTickets_results = $openTickets_query->fetchAll(PDO::FETCH_ASSOC);
 
 // Looping through open tickets
 foreach($openTickets_results as $openTicket) {
+    // Checking if the email has already been sent.
+    $reminderSent_query = $db->dbh->query("
+        SELECT `ost_form_entry_values`.*
+        FROM `ost_ticket`
+        LEFT JOIN `ost_form_entry` ON `ost_form_entry`.`object_id` = `ost_ticket`.`ticket_id` AND `ost_form_entry`.`object_type` = 'T'
+        LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id`
+        WHERE `ost_form_entry_values`.`field_id` = 48 AND `ost_ticket`.`ticket_id` = {$openTicket['ticket_id']}
+    ");
+    $reminderSent_query->execute();
+    $reminderSent_results = $reminderSent_query->fetchAll(PDO::FETCH_ASSOC);
+
+    if(!empty($reminderSent_results) && $reminderSent_results[0]['value'] == 1) continue;
+
+    echo "<pre>";
+    print_r($openTicket);
     
     // Fetch ticket owner
     $user_id = $openTicket['user_id'];
@@ -52,8 +69,19 @@ foreach($openTickets_results as $openTicket) {
     );
 
     sendMail($_emailVariables);
-    $db->updateValue(array('RMARequiredEmailSent' => 1), array('ticket_id' => $openTicket['ticket_id']), 'ost_ticket__cdata');
-    die;
+
+    if(empty($reminderSent_results)) {
+        $db->dbh->query("
+            INSERT INTO `ost_form_entry_values`
+            SET `entry_id` = {$openTicket['form_id']}, `field_id` = 48, `value` = '1'
+        ");  
+    } else {
+        $db->dbh->query("
+            UPDATE `ost_form_entry_values`
+            SET `value` = 1
+            WHERE `ost_form_entry_values`.`entry_id` = {$openTicket['form_id']} AND `ost_form_entry_values`.`field_id` = 48
+        ");
+    }
 }
 
 function sendMail($_ticketVariables) {
