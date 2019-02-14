@@ -4,42 +4,23 @@ date_default_timezone_set("Asia/Beirut");
 require __DIR__ . '/db.php';
 $db = new Db();
 
-// Importing Config
-$configFile = file_get_contents(__DIR__ . '/config.json');
-$config = json_decode($configFile, true);
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Importing mail class
 require __DIR__ . "/vendor/autoload.php";
 
-// Config Translation
-$_organizationSLA = array(
-    "Bronze"    => "bronze_organization_sla",
-    "Silver"    => "silver_organization_sla",
-    "Gold"      => "gold_organization_sla"
-);
-
-$_ticketSLA = array(
-    "1"           => "default_ticket_sla",
-    "2"           => "gold_ticket_sla",
-    "3"           => "silver_ticket_sla",
-    "4"           => "bronze_ticket_sla",
-    "5"           => "no_ticket_sla"
-);
 
 // Fetching all the tickets that are open
 // Closed means status_id = 3, so checking for anything different than 3
 $openTickets_query = $db->dbh->query("
-	SELECT `ost_ticket`.*, `ost_ticket__cdata`.*, `ost_ticket_priority`.`priority_desc`
+    SELECT `ost_ticket`.*, `ost_ticket__cdata`.*, `ost_ticket_priority`.`priority_desc`
     FROM `ost_ticket`
     LEFT JOIN `ost_ticket__cdata` ON `ost_ticket__cdata`.`ticket_id` = `ost_ticket`.`ticket_id`
     LEFT JOIN `ost_ticket_priority` ON `ost_ticket__cdata`.`priority` = `ost_ticket_priority`.`priority_id` 
     WHERE `status_id` != 3 AND `status_id` != 2");
 $openTickets_query->execute();
 $openTickets_results = $openTickets_query->fetchAll(PDO::FETCH_ASSOC);
-
 
 // Looping through open tickets
 foreach($openTickets_results as $openTicket) {
@@ -52,13 +33,13 @@ foreach($openTickets_results as $openTicket) {
     $user_result = $user_query->fetchAll(PDO::FETCH_ASSOC);
     $user = $user_result[0];
 
-	$staff_id = $openTicket['staff_id'];
+    $staff_id = $openTicket['staff_id'];
     $staff_query = $db->dbh->prepare("SELECT * FROM `ost_staff` WHERE `staff_id` = :id");
     $staff_query->bindParam(":id", $staff_id);
     $staff_query->execute();
     $staff_result = $staff_query->fetchAll(PDO::FETCH_ASSOC);
     $staff = !empty($staff_result) ? $staff_result[0] : array('firstname' => 'Not', 'lastname' => 'Assigned');
-	
+
     // Stop if user is not part of an organization
     if($user['org_id'] == 0) continue;
 
@@ -74,7 +55,7 @@ foreach($openTickets_results as $openTicket) {
 
     // Fetching form entry to check the Organization's SLA
     $ostForm_query = $db->dbh->prepare("
-		SELECT `ost_form_entry_values`.* FROM `ost_form_entry` 
+        SELECT `ost_form_entry_values`.* FROM `ost_form_entry` 
         LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id` 
         WHERE `ost_form_entry`.`object_type` = 'O' AND `ost_form_entry`.`object_id` = :id AND `ost_form_entry_values`.`field_id` = 38");
     $ostForm_query->bindParam(":id", $organization_id);
@@ -103,10 +84,9 @@ foreach($openTickets_results as $openTicket) {
     $nowDate = time();
     $differenceInHours = floor(($nowDate - $ticketDate) / 3600);
 
-	// Template Variables
+    // Template Variables
     $_emailVariables = array(
         '{_userName}' => $user['name'],
-		'{_orgName}' => $organization['name'],
         '{_ticketNumber}' => $openTicket['number'],
         '{_ticketID}' => $openTicket['ticket_id'],
         '{_ticketSubject}' => $openTicket['subject'],
@@ -117,25 +97,110 @@ foreach($openTickets_results as $openTicket) {
     // Getting Ticket SLA ID
     $ticketSLA = $openTicket['sla_id'];
 
-    $orgConfig = $config[$_organizationSLA[$orgSLA]];
-    $ticketConfig = $orgConfig[$_ticketSLA[$ticketSLA]];
+    if($orgSLA == 'Bronze') {
+        if($ticketSLA == 1) {
+            // If Default SLA            
+            
+        } else if($ticketSLA == 2) {
+            // If Gold SLA
 
-    // If no config exists for the amount of reminders already sent
-    if($openTicket['reminders_sent'] + 1 > count($ticketConfig['reminders'])) {
-        echo "Could not send reminder for Ticket ID {$openTicket['ticket_id']}, no config for that many reminders sent ({$openTicket['reminders_sent']})";
-        continue;
+        } else if($ticketSLA == 3) {
+            // If Silver SLA
+
+        } else if($ticketSLA == 4) {
+            // If Bronze SLA
+
+        } else if($ticketSLA == 5) {
+            // If No SLA
+
+        }
+    } else if($orgSLA == 'Silver') {
+        if($ticketSLA == 1) {
+            // If Default SLA
+
+        } else if($ticketSLA == 2) {
+            // If Gold SLA
+
+        } else if($ticketSLA == 3) {
+            // If Silver SLA
+
+        } else if($ticketSLA == 4) {
+            // If Bronze SLA
+
+        } else if($ticketSLA == 5) {
+            // If No SLA
+            
+        }
+    } else if($orgSLA == 'Gold') {
+        if($ticketSLA == 1) {
+            // If Default SLA
+
+        } else if($ticketSLA == 2) {
+            // If Gold SLA
+
+            // If no reminder has been sent
+            if($openTicket['reminders_sent'] == 0) {
+                // If 72 hours have passed
+                if($differenceInHours >= 72) {
+                    // Send email reminder to TM
+                    incrementReminder($db, 1, $openTicket['ticket_id']);
+                    sendMail($openTicket['ticket_id'], $differenceInHours, $_emailVariables, true);
+                }
+            } else {
+                // If a reminder has already been sent
+                
+                // Check how long it's been since the last reminder was sent
+                $lastReminderDate = $openTicket['last_reminder_sent'];
+                $nowDate = time();
+                $lastReminderDifference = floor(($nowDate - $lastReminderDate) / 3600);
+
+                // If only 1 reminder has been sent
+                if($openTicket['reminders_sent'] == 1) {
+                    // If it's been 1 hour since the last reminder was sent
+                    if($lastReminderDifference >= 1) {
+                        // Send email to TM, SM
+                        incrementReminder($db, 2, $openTicket['ticket_id']);
+                        sendMail($openTicket['ticket_id'], $differenceInHours, $_emailVariables, true, true);
+                    }
+                } 
+                
+                // If 2 reminders have been sent
+                if($openTicket['reminders_sent'] == 2) {
+                    // If it's been 2 hours since the last reminder was sent
+                    if($lastReminderDifference >= 2) {
+                        // Send email to TM, SM, OM
+                        incrementReminder($db, 3, $openTicket['ticket_id']);
+                        sendMail($openTicket['ticket_id'], $differenceInHours, $_emailVariables, true, true, true);
+                    }
+                }
+
+                // If 3 reminders have been sent
+                if($openTicket['reminders_sent'] == 3) {
+                    // If it's been 20 hours since the last reminder was sent
+                    if($lastReminderDifference >= 20) {
+                        // Send email to TM, SM, OM, and President
+                        incrementReminder($db, 4, $openTicket['ticket_id']);
+                        sendMail($openTicket['ticket_id'], $differenceInHours, $_emailVariables, true, true, true, true);
+                    }
+                }
+
+            }
+        } else if($ticketSLA == 3) {
+            // If Silver SLA
+
+        } else if($ticketSLA == 4) {
+            // If Bronze SLA
+
+        } else if($ticketSLA == 5) {
+            // If No SLA
+            
+        }
+
     }
-
-    $reminderConfig = $ticketConfig['reminders'][$openTicket['reminders_sent']];
     
-    if($differenceInHours >= $reminderConfig['time']) {
-        incrementReminder($db, $openTicket['reminders_sent'] + 1, $openTicket['ticket_id']);
-        sendMail($openTicket['ticket_id'], $differenceInHours, $_emailVariables, $reminderConfig['send']['DM'], $reminderConfig['send']['TM'], $reminderConfig['send']['CEO'], $reminderConfig['send']['President']);
-    }
-
     echo "<pre>";
     print_r($openTicket);
-	print_r($_emailVariables);
+    print_r($_emailVariables);
     echo "</pre>";
 }
 
@@ -155,35 +220,38 @@ function sendMail($ticketID, $openFor, $_ticketVariables, $tm = false, $sm = fal
         $mail->SMTPAutoTLS = false;
 
         //Recipients
-        $mail->setFrom('no_reply@bmbgroup.com');
+        $mail->setFrom('tac@bmbgroup.com');
         $mail->isHTML(true);                                  // Set email format to HTML
-        $mail->Subject = "Ticket Escalation Alert";
+        $mail->Subject = "Ticket #{$ticketID} is still open.";
+
         
-		$tpl = file_get_contents(__DIR__ . "/templates/escalation.tpl");
+        $tpl = file_get_contents(__DIR__ . "/templates/escalation.tpl");
         
         foreach($_ticketVariables as $variable => $value) {
             $tpl = str_replace($variable, $value, $tpl);
         }
+
         $tpl = str_replace('{_openFor}', $openFor, $tpl);
+
         $tpl = nl2br($tpl);
-		
+
         $mail->Body    = $tpl;
         $mail->AltBody = $tpl;
             
         if($tm) {
-            $mail->addAddress("ramy.khalil@bmbgroup.com");
+            $mail->addAddress("andy@yllw.com");
         }
 
         if($sm) {
-            $mail->addAddress("ramykhalil9@gmail.com");
+            $mail->addAddress("andy.abihaidar@xtnd.io");
         }
 
         if($om) {
-            $mail->addAddress("duheli@heximail.com");
+            $mail->addAddress("andy@xtnd.io");
         }
 
         if($president) {
-            $mail->addAddress("xudic@22office.com");
+            $mail->addAddress("andyabihaidar@gmail.com");
         }
 
         $mail->send();

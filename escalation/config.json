@@ -1,0 +1,67 @@
+{
+    "bronze_organization_sla": {
+        "default_ticket_sla": {
+        },
+        "gold_ticket_sla": {},
+        "silver_ticket_sla": {},
+        "bronze_ticket_sla": {},
+        "no_ticket_sla": {}
+    },
+
+
+    "silver_organization_sla": {
+        "default_ticket_sla": {},
+        "gold_ticket_sla": {},
+        "silver_ticket_sla": {},
+        "bronze_ticket_sla": {},
+        "no_ticket_sla": {}
+    },
+
+
+    "gold_organization_sla": {
+        "default_ticket_sla": {},
+        "gold_ticket_sla": {
+            "reminders": [
+                {
+                    "time": 72,
+                    "send": {
+                        "DM": true,
+                        "TM": false,
+                        "CEO": false,
+                        "President": false
+                    }
+                },
+                {
+                    "time": 1,
+                    "send": {
+                        "DM": true,
+                        "TM": true,
+                        "CEO": false,
+                        "President": false
+                    }
+                },
+                {
+                    "time": 2,
+                    "send": {
+                        "DM": true,
+                        "TM": true,
+                        "CEO": true,
+                        "President": false
+                    }
+                },
+                {
+                    "time": 20,
+                    "send": {
+                        "DM": true,
+                        "TM": true,
+                        "CEO": true,
+                        "President": true
+                    }
+                }
+            ]
+        },
+        "silver_ticket_sla": {},
+        "bronze_ticket_sla": {},
+        "no_ticket_sla": {}
+    }
+}

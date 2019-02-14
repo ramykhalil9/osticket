@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("Asia/Beirut");
 
 // Importing database class 
 require __DIR__ . '/db.php';
