@@ -1,5 +1,6 @@
 <?php
 date_default_timezone_set("Asia/Beirut");
+
 // Importing database class 
 require __DIR__ . '/db.php';
 $db = new Db();
@@ -143,7 +144,7 @@ function incrementReminder($db, $i, $id) {
     $db->updateValue(array("last_reminder_sent" => time(), 'reminders_sent' => $i), array('ticket_id' => $id), 'ost_ticket');
 }
 
-function sendMail($ticketID, $openFor, $_ticketVariables, $tm = false, $sm = false, $om = false, $president = false) {
+function sendMail($ticketID, $openFor, $_ticketVariables, $dm = false, $tm = false, $ceo = false, $president = false) {
     $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
     try {
         //Server settings
@@ -170,15 +171,15 @@ function sendMail($ticketID, $openFor, $_ticketVariables, $tm = false, $sm = fal
         $mail->Body    = $tpl;
         $mail->AltBody = $tpl;
             
-        if($tm) {
+        if($dm) {
             $mail->addAddress("ramy.khalil@bmbgroup.com");
         }
 
-        if($sm) {
+        if($tm) {
             $mail->addAddress("ramykhalil9@gmail.com");
         }
 
-        if($om) {
+        if($ceo) {
             $mail->addAddress("duheli@heximail.com");
         }
 
