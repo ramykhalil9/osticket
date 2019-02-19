@@ -30,6 +30,13 @@ $_ticketSLA = array(
     "5"           => "no_ticket_sla"
 );
 
+$_prioritySLA = array(
+    "1"          => "low_priority",
+    "2"          => "normal_priority",
+    "3"          => "high_priority",
+    "4"          => "emergency_priority"
+);
+
 // Fetching all the tickets that are open
 // Closed means status_id = 3, so checking for anything different than 3
 $openTickets_query = $db->dbh->query("
@@ -72,32 +79,44 @@ foreach($openTickets_results as $openTicket) {
     $organization_result = $organization_query->fetchAll(PDO::FETCH_ASSOC);
     $organization = $organization_result[0];
 
+    // Commenting the below since OrgSLA is no longer needed. Can revert back if needed at some point.
 
     // Fetching form entry to check the Organization's SLA
+    // $ostForm_query = $db->dbh->prepare("
+	// 	SELECT `ost_form_entry_values`.* FROM `ost_form_entry` 
+    //     LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id` 
+    //     WHERE `ost_form_entry`.`object_type` = 'O' AND `ost_form_entry`.`object_id` = :id AND `ost_form_entry_values`.`field_id` = 38");
+    // $ostForm_query->bindParam(":id", $organization_id);
+    // $ostForm_query->execute();
+    // $ostForm_results = $ostForm_query->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Setting SLA to Organization
+    
+    // $orgSLA = false;
+    // switch($ostForm_results[0]['value']) {
+    //     case('{"Bronze":"Bronze"}'):
+    //         $orgSLA = "Bronze";
+    //         break;
+    //     case('{"Silver":"Silver"}'):
+    //         $orgSLA = "Silver";
+    //         break;
+    //     case('{"Gold":"Gold"}'):
+    //         $orgSLA = "Gold";
+    //         break;
+    // }
+
+    // // If no SLA, return
+    // if(!$orgSLA) continue;
+
+    // Fetching ticket priority
     $ostForm_query = $db->dbh->prepare("
 		SELECT `ost_form_entry_values`.* FROM `ost_form_entry` 
         LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id` 
-        WHERE `ost_form_entry`.`object_type` = 'O' AND `ost_form_entry`.`object_id` = :id AND `ost_form_entry_values`.`field_id` = 38");
-    $ostForm_query->bindParam(":id", $organization_id);
+        WHERE `ost_form_entry`.`object_type` = 'T' AND `ost_form_entry`.`object_id` = :id AND `ost_form_entry_values`.`field_id` = 22");
+    $ostForm_query->bindParam(":id", $openTicket['ticket_id']);
     $ostForm_query->execute();
     $ostForm_results = $ostForm_query->fetchAll(PDO::FETCH_ASSOC);
     
-    // Setting SLA to Organization
-    $orgSLA = false;
-    switch($ostForm_results[0]['value']) {
-        case('{"Bronze":"Bronze"}'):
-            $orgSLA = "Bronze";
-            break;
-        case('{"Silver":"Silver"}'):
-            $orgSLA = "Silver";
-            break;
-        case('{"Gold":"Gold"}'):
-            $orgSLA = "Gold";
-            break;
-    }
-
-    // If no SLA, return
-    if(!$orgSLA) continue;
 
     // Check how long it has been open in hours
     $ticketDate = strtotime($openTicket['created']);
@@ -118,16 +137,16 @@ foreach($openTickets_results as $openTicket) {
     // Getting Ticket SLA ID
     $ticketSLA = $openTicket['sla_id'];
 
-    $orgConfig = $config[$_organizationSLA[$orgSLA]];
-    $ticketConfig = $orgConfig[$_ticketSLA[$ticketSLA]];
+    $ticketConfig = $config[$_ticketSLA[$ticketSLA]];
+    $priorityConfig = $ticketConfig[$_prioritySLA[$ostForm_results[0]['value_id']]];
 
     // If no config exists for the amount of reminders already sent
-    if($openTicket['reminders_sent'] + 1 > count($ticketConfig['reminders'])) {
+    if($openTicket['reminders_sent'] + 1 > count($priorityConfig['reminders'])) {
         echo "Could not send reminder for Ticket ID {$openTicket['ticket_id']}, no config for that many reminders sent ({$openTicket['reminders_sent']})";
         continue;
     }
 
-    $reminderConfig = $ticketConfig['reminders'][$openTicket['reminders_sent']];
+    $reminderConfig = $priorityConfig['reminders'][$openTicket['reminders_sent']];
     
     if($differenceInHours >= $reminderConfig['time']) {
         incrementReminder($db, $openTicket['reminders_sent'] + 1, $openTicket['ticket_id']);
