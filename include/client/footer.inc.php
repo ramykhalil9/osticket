@@ -16,10 +16,6 @@
     <h4><?php echo __('Please Wait!');?></h4>
     <p><?php echo __('Please wait... it will take a second!');?></p>
 </div>
-<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
   
 <?php
 if (($lang = Internationalization::getCurrentLanguage()) && $lang != 'en_US') { ?>
