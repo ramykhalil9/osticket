@@ -136,7 +136,6 @@ foreach($openTickets_results as $openTicket) {
 
     // Getting Ticket SLA ID
     $ticketSLA = $openTicket['sla_id'];
-
     $ticketConfig = $config[$_ticketSLA[$ticketSLA]];
     $priorityConfig = $ticketConfig[$_prioritySLA[$ostForm_results[0]['value_id']]];
 
@@ -148,6 +147,12 @@ foreach($openTickets_results as $openTicket) {
 
     $reminderConfig = $priorityConfig['reminders'][$openTicket['reminders_sent']];
     
+    if($openTicket['reminders_sent'] >= 1) {
+        $ticketDate = $openTicket['last_reminder_sent'];
+        $nowDate = time();
+        $differenceInHours = floor(($nowDate - $ticketDate) / 3600);
+    }
+
     if($differenceInHours >= $reminderConfig['time']) {
         incrementReminder($db, $openTicket['reminders_sent'] + 1, $openTicket['ticket_id']);
         sendMail($openTicket['ticket_id'], $differenceInHours, $_emailVariables, $reminderConfig['send']['DM'], $reminderConfig['send']['TM'], $reminderConfig['send']['CEO'], $reminderConfig['send']['President']);

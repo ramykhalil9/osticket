@@ -10,7 +10,7 @@ echo Format::display($body); ?>
 <p>
 <strong><?php echo __('Thanks for registering for an account.'); ?></strong>
 </p>
-<p><?php echo __(
+<p><br><br><?php echo __(
 "We've just sent you an email to the address you entered. Please follow the link in the email to confirm your account and gain access to your tickets."
 ); ?>
 </p>
