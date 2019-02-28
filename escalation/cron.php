@@ -82,13 +82,13 @@ foreach($openTickets_results as $openTicket) {
     // Commenting the below since OrgSLA is no longer needed. Can revert back if needed at some point.
 
     // Fetching form entry to check the Organization's SLA
-    // $ostForm_query = $db->dbh->prepare("
-	// 	SELECT `ost_form_entry_values`.* FROM `ost_form_entry` 
-    //     LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id` 
-    //     WHERE `ost_form_entry`.`object_type` = 'O' AND `ost_form_entry`.`object_id` = :id AND `ost_form_entry_values`.`field_id` = 38");
-    // $ostForm_query->bindParam(":id", $organization_id);
-    // $ostForm_query->execute();
-    // $ostForm_results = $ostForm_query->fetchAll(PDO::FETCH_ASSOC);
+    $orgForm_query = $db->dbh->prepare("
+		SELECT `ost_form_entry_values`.* FROM `ost_form_entry` 
+        LEFT JOIN `ost_form_entry_values` ON `ost_form_entry_values`.`entry_id` = `ost_form_entry`.`id` 
+        WHERE `ost_form_entry`.`object_type` = 'O' AND `ost_form_entry`.`object_id` = :id AND `ost_form_entry_values`.`field_id` = 38");
+    $orgForm_query->bindParam(":id", $organization_id);
+    $orgForm_query->execute();
+    $orgForm_results = $orgForm_query->fetchAll(PDO::FETCH_ASSOC);
     
     // Setting SLA to Organization
     
@@ -126,7 +126,8 @@ foreach($openTickets_results as $openTicket) {
 	// Template Variables
     $_emailVariables = array(
         '{_userName}' => $user['name'],
-		'{_orgName}' => $organization['name'],
+        '{_orgName}' => $organization['name'],
+        '{_orgSLA}' => $orgForm_results[0]['value'],
         '{_ticketNumber}' => $openTicket['number'],
         '{_ticketID}' => $openTicket['ticket_id'],
         '{_ticketSubject}' => $openTicket['subject'],
