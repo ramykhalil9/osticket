@@ -16,6 +16,7 @@ if (isset($_REQUEST['status'])) {
     $settings['status'] = $_REQUEST['status'];
 }
 
+
 $org_tickets = $thisclient->canSeeOrgTickets();
 if ($settings['keywords']) {
     // Don't show stat counts for searches
@@ -42,18 +43,18 @@ $sortOptions=array('id'=>'number', 'subject'=>'cdata__subject',
 $orderWays=array('DESC'=>'-','ASC'=>'');
 //Sorting options...
 $order_by=$order=null;
-$sort=(isset($_REQUEST['sort']) && $sortOptions[strtolower($_REQUEST['sort'])])?strtolower($_REQUEST['sort']):'date';
+$sort=($_REQUEST['sort'] && $sortOptions[strtolower($_REQUEST['sort'])])?strtolower($_REQUEST['sort']):'date';
 if($sort && $sortOptions[$sort])
     $order_by =$sortOptions[$sort];
 
 $order_by=$order_by ?: $sortOptions['date'];
-if (isset($_REQUEST['order']) && !is_null($orderWays[strtoupper($_REQUEST['order'])]))
+if ($_REQUEST['order'] && $orderWays[strtoupper($_REQUEST['order'])])
     $order = $orderWays[strtoupper($_REQUEST['order'])];
 else
     $order = $orderWays['DESC'];
 
 $x=$sort.'_sort';
-$$x=' class="'.strtolower(isset($_REQUEST['order']) ?: 'desc').'" ';
+$$x=' class="'.strtolower($_REQUEST['order'] ?: 'desc').'" ';
 
 $basic_filter = Ticket::objects();
 if ($settings['topic_id']) {
@@ -77,15 +78,11 @@ if ($settings['status'])
 // unique values
 $visibility = $basic_filter->copy()
     ->values_flat('ticket_id')
-    ->filter(array('user_id' => $thisclient->getId()));
-
-// Add visibility of Tickets where the User is a Collaborator if enabled
-// if ($cfg->collaboratorTicketsVisibility())
-//     $visibility = $visibility
-//     ->union($basic_filter->copy()
-//         ->values_flat('ticket_id')
-//         ->filter(array('thread__collaborators__user_id' => $thisclient->getId()))
-//     , false);
+    ->filter(array('user_id' => $thisclient->getId()))
+    ->union($basic_filter->copy()
+        ->values_flat('ticket_id')
+        ->filter(array('thread__collaborators__user_id' => $thisclient->getId()))
+    , false);
 
 if ($thisclient->canSeeOrgTickets()) {
     $visibility = $visibility->union(
@@ -124,7 +121,7 @@ if(!$results_type)
 	$results_type=ucfirst($status).' '.__('Tickets');
 }
 $showing.=($status)?(' '.$results_type):' '.__('All Tickets');
-if($search)
+if(isset($search) && $search)
     $showing=__('Search Results').": $showing";
 
 $negorder=$order=='-'?'ASC':'DESC'; //Negate the sorting
@@ -133,7 +130,7 @@ $tickets->order_by($order.$order_by);
 $tickets->values(
     'ticket_id', 'number', 'created', 'isanswered', 'source', 'status_id',
     'status__state', 'status__name', 'cdata__subject', 'dept_id',
-    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id'
+    'dept__name', 'dept__ispublic', 'user__default_email__address'
 );
 
 ?>
@@ -181,18 +178,15 @@ foreach (Topic::getHelpTopics(true) as $id=>$name) {
          <a href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'open')); ?>">
     <?php echo _P('ticket-status', 'Open'); if ($openTickets > 0) echo '<span class="badge">'.sprintf(' %d', $openTickets).'</span>'; ?>
          </a></li>
-    <?php if ($closedTickets) { ?>
-    &nbsp;
-    <span style="color:lightgray">|</span>
-    <?php }
-}
+<?php }
 if ($closedTickets) {?>
     &nbsp;
+    <li role="presentation" class="<?php if ($status == 'closed') echo 'active'; ?>"> 
     <i class="icon-file-text"></i>
     <a class="state <?php if ($status == 'closed') echo 'active'; ?>"
         href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'closed')); ?>">
     <?php echo __('Closed'); if ($closedTickets > 0) echo sprintf(' (%d)', $closedTickets); ?>
-    </a>
+    </a></li>
 <?php } ?>
     </ul>
 </div> 

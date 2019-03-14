@@ -8,7 +8,7 @@ if(!defined('OSTCLIENTINC') || !$thisclient || !$ticket || !$ticket->checkUserAc
     <?php echo sprintf(__('Editing Ticket #%s'), $ticket->getNumber()); ?>
 </h1>
 
-<form action="tickets.php" method="post">
+<form action="tickets.php" method="post" id='custom-form'>
     <?php echo csrf_token(); ?>
     <input type="hidden" name="a" value="edit"/>
     <input type="hidden" name="id" value="<?php echo Format::htmlchars($_REQUEST['id']); ?>"/>

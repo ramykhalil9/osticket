@@ -14,8 +14,8 @@ html {
     padding-bottom: 10px;
 }
 .navbar-inverse {
-    background-color: #0473aa;
-border-color: #0473aa;
+    background-color: #0282c3;
+border-color: #0282c3;
 }
 .navbar {
     margin-bottom: 20px;
@@ -42,8 +42,14 @@ border-color: #0473aa;
 font-size: 16px;
 }
 
+#custom-form .form-group:after  {
+    display: table;
+    content: '';
+    clear: both;
+}
+
 .triangle {
-    display: none;
+    /* display: none; */
 }
 .triangle-green{
     position: relative;
@@ -64,7 +70,7 @@ font-size: 16px;
 .triangle-blue:before{
 	content:'';
 	border-right: 120px solid transparent;
-    border-top: 120px solid #0473aa;
+    border-top: 120px solid #0282c3;
     position: absolute;
     left: 0px;
     top: 28px;
@@ -82,7 +88,7 @@ font-size: 16px;
 .outer_box_blue {
     border-radius: 3px;
     border: 1px solid #999;
-    border-left: 4px solid #0473aa;
+    border-left: 4px solid #0282c3;
 }
 
 .triangle img {
@@ -101,7 +107,7 @@ color: #ffffff;
     font-size: 25px;
 }
 .box-body p{
-padding: 0px 20px;
+padding: 0px 70px;
 }
 .orange-triangle:before {
    border-top: 120px solid #ec971f;
@@ -119,7 +125,7 @@ padding: 0px 20px;
 .support-image {
     position: relative;
     text-align: center;
-    height: 350px;
+    height: 280px;
     background-size: cover;
     background-position: center center;
    
@@ -150,6 +156,7 @@ padding: 0px 20px;
 }
 .front-boxes {
     margin-top: 25px;
+    padding-bottom: 50px;
 }
 .support-image h4 {
     margin-top: -5px;
@@ -163,26 +170,27 @@ padding: 0px 20px;
     width: 100%;
 }
 #footer {
-    background: #0473aa;
+    background: #0282c3;
     height: 32px;
 }
 
 .copy-right {
     font-size: 11px;
+    color: #FFF;
     padding-top: 8px;
 }
 h1 {
     background-color: #f5f5f5;
     padding: 5px 0px 5px 10px;
     font-size: 28px;
-    color: #0473aa;
+    color: #0282c3;
 }
 .login-page {
     margin-top: 20px;
 }
 
 .form-control {
-    border-left: 4px solid #0473aa;
+    border-left: 4px solid #0282c3;
 }
 
 select {
@@ -191,13 +199,13 @@ select {
     height: 45px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    border-left: 4px solid #0473aa;
+    border-left: 4px solid #0282c3;
 }
 
 textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
-    border-left: 4px solid #0473aa;
+    border-left: 4px solid #0282c3;
     padding-left: 10px;
     box-sizing: border-box;
     padding-top: 10px;
@@ -239,7 +247,7 @@ hr {
 }
 #kb .fa-folder-open {
     font-size: 84px;
-    color: #0473aa;
+    color: #0282c3;
     padding-left: 12px;
 }
 
@@ -394,7 +402,7 @@ color: #A8A8A8;
 .refersh-icon {
     margin-right: 10px;
     margin-top: 3px;
-    color:#5bc0de;
+    color:#0282c3;
     font-size: 24px;
 }
 
@@ -548,7 +556,7 @@ margin-left: 2px;
     background: transparent;
 }
 #ticketTable thead tr td{
-    background-color: #0473aa;
+    background-color: #0282c3;
 }
 #ticketTable thead tr td a {
     color: #ffffff;
@@ -638,3 +646,7 @@ margin-top: 16px;
     margin-top: 15px;
 }
 
+
+.btn-primary {
+    background-color: #0282c3
+}

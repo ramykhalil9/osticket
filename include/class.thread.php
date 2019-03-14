@@ -231,7 +231,6 @@ class Thread extends VerySimpleModel {
 
     // Render thread
     function render($type=false, $options=array()) {
-
         $mode = $options['mode'] ?: self::MODE_STAFF;
 
         // Register thread actions prior to rendering the thread.
