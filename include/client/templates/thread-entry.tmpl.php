@@ -70,6 +70,7 @@ if ($cfg->isAvatarsEnabled() && $user)
         </script>
 <?php }
 ?>
+</article>
 
 
 

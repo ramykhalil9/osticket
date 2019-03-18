@@ -1,12 +1,15 @@
 <?php
 if(!defined('OSTCLIENTINC') || !is_object($thisclient) || !$thisclient->isValid()) die('Access Denied');
 
-$settings = &$_SESSION['client:Q'];
+// unset($settings['keywords']);
+// unset($settings['topic_id']);
+
+// $settings = &$_SESSION['client:Q'];
 
 // Unpack search, filter, and sort requests
 if (isset($_REQUEST['clear']))
     $settings = array();
-if (isset($_REQUEST['keywords'])) {
+if (isset($_GET['keywords'])) {
     $settings['keywords'] = $_REQUEST['keywords'];
 }
 if (isset($_REQUEST['topic_id'])) {

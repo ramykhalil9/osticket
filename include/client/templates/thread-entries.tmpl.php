@@ -18,8 +18,9 @@ if (count($entries)) {
         if ($i != 0)
             // Set relative time resolution to 12 hours
             $rel = Format::relativeTime(Misc::db2gmtime($E->created, false, 43200));
-        $buckets[$rel][] = $E;
+        $buckets[$i][] = $E;
     }
+
 
     // Go back through the entries and render them on the page
     $i = 0;

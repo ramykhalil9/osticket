@@ -94,6 +94,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                 // Drop attachments
                 $attachments->reset();
                 $attachments->getForm()->setSource(array());
+                header("Location: tickets.php?id=" . $ticket->getId());
             } else {
                 $errors['err'] = sprintf('%s %s',
                     __('Unable to post the message.'),

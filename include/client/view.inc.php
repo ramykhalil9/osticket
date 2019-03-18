@@ -4,14 +4,12 @@ if(!defined('OSTCLIENTINC') || !$thisclient || !$ticket || !$ticket->checkUserAc
 $info=($_POST && $errors)?Format::htmlchars($_POST):array();
 
 $dept = $ticket->getDept();
-
 if ($ticket->isClosed() && !$ticket->isReopenable())
     $warn = sprintf(__('%s is marked as closed and cannot be reopened.'), __('This ticket'));
 
 //Making sure we don't leak out internal dept names
 if(!$dept || !$dept->isPublic())
     $dept = $cfg->getDefaultDept();
-
 if ($thisclient && $thisclient->isGuest()
     && $cfg->isClientRegistrationEnabled()) { ?>
 

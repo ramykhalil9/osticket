@@ -2,6 +2,7 @@
 $desc = $event->getDescription(ThreadEvent::MODE_CLIENT);
 if (!$desc)
     return;
+return;
 ?>
 <div class="panel-footer"><small>
 <div class="thread-event <?php if ($event->uid) echo 'action'; ?>">
