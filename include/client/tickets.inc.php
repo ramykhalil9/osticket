@@ -204,23 +204,23 @@ if ($closedTickets) {?>
     <caption><?php echo $showing; ?></caption>
     <thead>
         <tr>
-            <th nowrap>
+            <th width="320">
                 <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Ticket ID"><?php echo __('Ticket #');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
-            <th width="320">
+            <th>
                 <a href="tickets.php?sort=subject&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?>&nbsp;<i class="icon-sort"></i></a>
-            </th>
-            <th width="120">
-                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?>&nbsp;<i class="icon-sort"></i></a>
-            </th>
-            <th width="120">
-                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Last Updated');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="100">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="120">
                 <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Department');?>&nbsp;<i class="icon-sort"></i></a>
+            </th>
+            <th width="120">
+                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?>&nbsp;<i class="icon-sort"></i></a>
+            </th>
+            <th width="120">
+                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Last Updated');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
         </tr>
     </thead>
@@ -259,10 +259,10 @@ if ($closedTickets) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $subject; ?></div>
                     <?php } ?>
                 </td>
-                <td><?php echo $T['created']; ?></td>
-                <td><?php echo $T['updated']; ?></td>
                 <td><?php echo $status; ?></td>
                 <td><span class="truncate"><?php echo $dept; ?></span></td>
+                <td><?php echo $T['created']; ?></td>
+                <td><?php echo $T['updated']; ?></td>
             </tr>
         <?php
         }
