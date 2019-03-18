@@ -29,14 +29,11 @@ p.buttons .btn {
     background-color: #ec971f;
     border-color: #ec971f;
 }
-.ticket-view > table {
-    margin-left: 15px;
-    width: auto;
-    margin-bottom: 20px !important;
-}
 
-.ticket-view > table td:nth-child(2) {
-    padding-left: 10px;
+
+.ticket-view .table>tbody>tr>td:nth-child(1),
+.ticket-view .table>tbody>tr>th:nth-child(1) {
+    width: 150px;
 }
 .panel-success-2>.panel-heading {
     color: #9e9626;
