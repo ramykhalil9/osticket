@@ -54,7 +54,7 @@ require(CLIENTINC_DIR.'header.inc.php');
                         <div class="box-body">
                             <h1><?php echo __('Check Ticket Status') ?></h1>
                             <p><?php echo __('We provide archives and history of all your current and past support requests complete with responses.') ?></p>
-                            <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>view.php"><?php echo __('Check Ticket Status') ?></a> <br><br>
+                            <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>tickets.php"><?php echo __('Check Ticket Status') ?></a> <br><br>
                         </div>
                     </div>
                 </div>  

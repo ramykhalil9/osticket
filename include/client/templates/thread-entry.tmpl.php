@@ -1,6 +1,7 @@
 <?php
 global $cfg;
 $entryTypes = array('M'=>'message', 'R'=>'response', 'N'=>'note');
+$isUser = $entry->getUser() ? true : false;
 $user = $entry->getUser() ?: $entry->getStaff();
 $name = $user ? $user->getName() : $entry->poster;
 $avatar = '';
@@ -10,7 +11,7 @@ if ($cfg->isAvatarsEnabled() && $user)
 <?php
  $type = $entryTypes[$entry->type];
  ?>
-        <article class="panel panel-primary <?php echo $type; ?> <?php if ($avatar) echo 'avatar'; ?>">
+        <article class="panel panel-primary <?php if($isUser) echo "thread-is-user"; else echo "thread-is-agent"; ?> <?php echo $type; ?> <?php if ($avatar) echo 'avatar'; ?>">
             <div class="panel-heading icon image-user">
                 <?php if ($avatar) { ?>
                     <?php echo $avatar; ?>

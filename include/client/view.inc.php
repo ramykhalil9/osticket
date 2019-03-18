@@ -97,9 +97,16 @@ if ($thisclient && $thisclient->isGuest()
 </div>
     </div>
 
-<table width="800" cellpadding="1" cellspacing="0" border="0" id="ticketInfo">
-    <tr>
-        <td colspan="2">
+
+<div class="col-md-12 col-lg-12"> 
+       <div class="panel panel-success panel-success-2">
+            <div class="panel-heading">
+              <h3 class="panel-title"><?php echo __('Ticket Details'); ?></h3>
+            </div>
+           <div class="panel-body">
+                                      <table class="table table-striped">
+                    <tbody>
+
 <!-- Custom Data -->
 <?php
 $sections = array();
@@ -116,12 +123,12 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $i=>$form) {
             $sections[$i][$j] = array($v, $a);
     }
 }
-foreach ($sections as $i=>$answers) {
+foreach ($sections as $i=>$answers) { 
     ?>
-        <table class="custom-data" cellspacing="0" cellpadding="4" width="100%" border="0">
-        <tr><td colspan="2" class="headline flush-left"><?php echo $form->getTitle(); ?></th></tr>
+        <!-- <tr><td colspan="2" class="headline flush-left"><?php //echo $form->getTitle(); ?></th></tr> -->
 <?php foreach ($answers as $A) {
-    list($v, $a) = $A; ?>
+    list($v, $a) = $A; 
+    ?>
         <tr>
             <th><?php
 echo $a->getField()->get('label');
@@ -137,6 +144,9 @@ echo $v;
     </td>
 </tr>
 </table>
+</div>
+</div>
+
 <div class="col-md-12">
 <div>
     <div class="timeline">
