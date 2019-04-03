@@ -690,6 +690,7 @@ class TicketsAjaxAPI extends AjaxController {
                             _N('selected ticket', 'selected tickets', $count));
                 }
             }
+
             break;
         case 'transfer':
             $inc = 'transfer.tmpl.php';
@@ -794,6 +795,7 @@ class TicketsAjaxAPI extends AjaxController {
 
         include STAFFINC_DIR . "templates/$inc";
         //  Copy checked tickets to the form.
+
         echo "
         <script type=\"text/javascript\">
         $(function() {

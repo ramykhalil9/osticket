@@ -1,6 +1,5 @@
 <?php
 global $cfg;
-
 $form = $form ?: AssignmentForm::instantiate($info);
 
 if (!$info[':title'])
@@ -28,7 +27,7 @@ $action = $info[':action'] ?: ('#');
 <div style="display:block; margin:5px;">
 <form class="mass-action" method="post"
     name="assign"
-    id="<?php echo $form->getId(); ?>"
+    id="<?php //echo $form->getId(); ?>"
     action="<?php echo $action; ?>">
     <table width="100%">
         <?php
@@ -40,6 +39,7 @@ $action = $info[':action'] ?: ('#');
         </tbody>
         <?php
         }
+
        ?>
         <tbody>
             <tr><td colspan=2>

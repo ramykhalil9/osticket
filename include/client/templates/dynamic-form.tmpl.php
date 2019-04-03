@@ -5,7 +5,7 @@ if (!$form->hasAnyVisibleFields($thisclient))
     return;
 
 $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
-    ?>
+?>
 
     <div class="form-header" style="margin-bottom:0.5em">
     <h3><?php echo Format::htmlchars($form->getTitle()); ?></h3>
@@ -56,7 +56,8 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
       <label class="control-label col-sm-2"></label>
             <?php } ?>
       <div class="col-sm-10">
-      <?php       if ($field->isEditableToUsers() || $isCreate) {
+      <?php       
+      if ($field->isEditableToUsers() || $isCreate) {
                 $field->render(array('client'=>true));
             ?><?php
             foreach ($field->errors() as $e) { ?>

@@ -161,6 +161,7 @@ implements TemplateVariable {
                 $this->_forms[] = $F->form;
             }
         }
+
         return $this->_forms;
     }
 
