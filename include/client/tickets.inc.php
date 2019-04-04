@@ -214,7 +214,7 @@ if ($closedTickets) {?>
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="120">
-                <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Department');?>&nbsp;<i class="icon-sort"></i></a>
+                <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Priority"><?php echo __('Priority');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="180">
                 <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?>&nbsp;<i class="icon-sort"></i></a>
@@ -230,6 +230,7 @@ if ($closedTickets) {?>
      $defaultDept=Dept::getDefaultDeptName(); //Default public dept.
      if ($tickets->exists(true)) {
          foreach ($tickets as $T) {
+            $descTicket = Ticket::lookup($T['ticket_id']);
             $dept = $T['dept__ispublic']
                 ? Dept::getLocalById($T['dept_id'], 'name', $T['dept__name'])
                 : $defaultDept;
@@ -260,7 +261,7 @@ if ($closedTickets) {?>
                     <?php } ?>
                 </td>
                 <td><?php echo $status; ?></td>
-                <td><span class="truncate"><?php echo $dept; ?></span></td>
+                <td><span class="truncate"><?php echo $descTicket->getPriority(); ?></span></td>
                 <td><?php echo $T['created']; ?></td>
                 <td><?php echo $T['updated']; ?></td>
             </tr>
