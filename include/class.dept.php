@@ -791,6 +791,7 @@ extends Form {
     }
 
     function render($staff=true, $title=false, $options=array()) {
+
         return parent::render($staff, $title, $options + array('template' => 'dynamic-form-simple.tmpl.php'));
     }
 }

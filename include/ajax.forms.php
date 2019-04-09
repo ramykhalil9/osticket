@@ -17,7 +17,6 @@ class DynamicFormsAjaxAPI extends AjaxController {
     function getFormsForHelpTopic($topic_id, $client=false) {
         // if (!$_SERVER['HTTP_REFERER'])
         //     Http::response(403, 'Forbidden.');
-
         if (!($topic = Topic::lookup($topic_id)))
             Http::response(404, 'No such help topic');
 
@@ -32,7 +31,6 @@ class DynamicFormsAjaxAPI extends AjaxController {
             if (!$form->hasAnyVisibleFields())
                 continue;
             ob_start();
-
             if($topic_id == 13 || $topic_id == 12) {
                 $form->getForm($_SESSION[':form-data'])->render(array('mode' => 'create'));
             } else {
