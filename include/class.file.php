@@ -195,8 +195,8 @@ class AttachmentFile extends VerySimpleModel {
         $disposition=false, $handler=false
     ) {
         // Expire at the nearest midnight, allowing at least 12 hours access
-        $minage = $minage ?: 43200;
-        $gmnow = Misc::gmtime() + $minage;
+        $minage = isset($minage) ? $minage : 43200;
+        $gmnow = Misc::gmtime();
         $expires = $gmnow + 86400 - ($gmnow % 86400);
 
         // Generate a signature based on secret content

@@ -321,9 +321,26 @@ class SimpleForm extends Form {
         parent::__construct($source, $options);
         $this->setFields($fields);
     }
+    function hasAnyVisibleFields($user=false) {
+        global $thisstaff, $thisclient;
+        $user = $user ?: $thisstaff ?: $thisclient;
+        $visible = 0;
+        $isstaff = $user instanceof Staff;
+        foreach ($this->getFields() as $F) {
+            if ($isstaff) {
+                if ($F->isVisibleToStaff())
+                    $visible++;
+            }
+            elseif ($F->isVisibleToUsers()) {
+                $visible++;
+            }
+        }
+        return $visible > 0;
+    }
 }
 
 class CustomForm extends SimpleForm {
+
 
     function getFields() {
         global $thisstaff, $thisclient;

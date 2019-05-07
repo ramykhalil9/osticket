@@ -32,7 +32,7 @@ class DynamicFormsAjaxAPI extends AjaxController {
                 continue;
             ob_start();
             if($topic_id == 13 || $topic_id == 12) {
-                $form->getForm($_SESSION[':form-data'])->render(array('mode' => 'create'));
+                $form->getForm($_SESSION[':form-data'])->render(false, false, array('mode' => 'create'));
             } else {
                 $form->getForm($_SESSION[':form-data'])->render(!$client);
             }
