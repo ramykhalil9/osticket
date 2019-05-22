@@ -19,13 +19,13 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 'Use the forms below to create or update the information we have on file for your account'
 ); ?>
 </p>
-<form action="account.php" method="post" class="form-horizontal registration">
+<form action="account.php" method="post" class="form-horizontal registration" id='newaccountform'>
   <?php csrf_token(); ?>
   <input type="hidden" name="do" value="<?php echo Format::htmlchars($_REQUEST['do']
     ?: ($info['backend'] ? 'import' :'create')); ?>" />
 <?php
     $cf = $user_form ?: UserForm::getInstance();
-    $cf->render(array('staff' => false, 'mode' => 'create'));
+    $cf->render(false, false, array('staff' => false, 'mode' => 'create'));
 ?>
 
         <div><h3><?php echo __('Preferences'); ?><hr></h3>
